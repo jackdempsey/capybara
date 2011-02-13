@@ -220,7 +220,11 @@ class Capybara::Driver::RackTest < Capybara::Driver::Base
   end
 
   def to_binary(object)
-    return object unless Kernel.const_defined?(:Encoding)
+    # patching to fix:
+    # And I press "Sign in"                                 # features/step_definitions/web_steps.rb:38
+    #       incompatible encoding regexp match (UTF-8 regexp with ASCII-8BIT string) (Encoding::CompatibilityError)
+    # issue discussed here: https://github.com/jnicklas/capybara/issues#issue/179
+    return object# unless Kernel.const_defined?(:Encoding)
 
     if object.respond_to?(:force_encoding)
       object.dup.force_encoding(Encoding::ASCII_8BIT)
